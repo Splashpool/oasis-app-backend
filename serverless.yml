@@ -1,0 +1,21 @@
+service: oasis-backend
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: java8
+  region: eu-west-2
+  provider: serverless
+
+
+package:
+  artifact: target/hello-dev.jar
+
+functions:
+  locations:
+    handler: com.splashpool.Handler
+    events:
+      - http:
+          path: locations
+          method: get
