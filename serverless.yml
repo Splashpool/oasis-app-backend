@@ -6,7 +6,7 @@ provider:
   name: aws
   runtime: java8
   region: eu-west-2
-  provider: serverless
+  profile: serverless
 
 
 package:
