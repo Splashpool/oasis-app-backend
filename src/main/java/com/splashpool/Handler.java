@@ -1,32 +1,63 @@
 package com.splashpool;
 
-import java.util.Collections;
-import java.util.Map;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.splashpool.model.Location;
-import java.util.List;
-import java.util.ArrayList;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
 	private static final Logger LOG = LogManager.getLogger(Handler.class);
 
+//	private String DB_HOST = System.getenv("DB_HOST");
+//	private String DB_NAME = System.getenv("DB_NAME");
+//	private String DB_USER = System.getenv("DB_USER");
+//	private String DB_PASSWORD = System.getenv("DB_PASSWORD");
+
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
 		LOG.info("received: {}", input);
 
-		Location l1 = new Location("London", "A123345");
-		Location l2 = new Location("Birmingham", "A56789");
+//		String userId = (String) ((Map)input.get("queryStringParameters")).get("userId");
 
 		List<Location> locations = new ArrayList<>();
-		locations.add(l1);
-		locations.add(l2);
 
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			Connection connect = DriverManager.getConnection("jdbc:mysql://oasis.cpgnf1zc8lar.eu-west-2.rds.amazonaws.com/oasis?"
+					+ "user=<aUser>&password=<password>");
+
+			Statement statement = connect.createStatement();
+			ResultSet resultSet = statement.executeQuery("select locationName, locationId from oasis.Location");
+
+//			 Connection connection = DriverManager.getConnection(String.format(
+//			 		"jdbs:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
+//			 PreparedStatement preparedStatement = connection.prepareStatement(
+//					"SELECT locationName, locationId from Location where LocationName =?");
+//			 preparedStatement.setString(1, userId);
+//			 ResultSet resultSet = preparedStatement.executeQuery();
+
+
+
+			while( resultSet.next()) {
+				String locationName = resultSet.getString("locationName");
+				long locationId = resultSet.getLong("locationId");
+
+				LOG.info("User: {} {}", locationName, locationId);
+
+				locations.add(new Location(locationName, locationId));
+			}
+
+		} catch (ClassNotFoundException | SQLException e) {
+			LOG.error(e.getMessage());
+		}
 
 		return ApiGatewayResponse.builder()
 				.setStatusCode(200)

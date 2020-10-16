@@ -7,7 +7,11 @@ provider:
   runtime: java8
   region: eu-west-2
   profile: serverless
-
+#  environment:
+#    DB_HOST: ${file(./config.dev.json):DB_HOST}
+#    DB_NAME: ${file(./config.dev.json):DB_NAME}
+#    DB_USER: ${file(./config.dev.json):DB_USER}
+#    DB_PASSWORD: ${file(./config.dev.json):DB_PASSWORD}
 
 package:
   artifact: target/hello-dev.jar

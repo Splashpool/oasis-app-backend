@@ -3,9 +3,9 @@ package com.splashpool.model;
 public class Location {
 
     private String locationName;
-    private String locationId;
+    private long locationId;
 
-    public Location(String locationName, String locationId) {
+    public Location(String locationName, long locationId) {
         this.locationName = locationName;
         this.locationId = locationId;
     }
@@ -14,7 +14,7 @@ public class Location {
         return locationName;
     }
 
-    public String getLocationId() {
+    public long getLocationId() {
         return locationId;
     }
 }
