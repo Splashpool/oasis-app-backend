@@ -9,13 +9,13 @@ public class Location {
     private String city;
     private String postCode;
     private String country;
-    private Float  longitude;
-    private Float  latitude;
+    private double longitude;
+    private double latitude;
     private String adminOrg;
 
     public Location(Long locationId, String locationName,
                     String address1, String address2, String city, String postCode, String country,
-                    Float longitude, Float latitude, String adminOrg) {
+                    double longitude, double latitude, String adminOrg) {
         this.locationId   = locationId;
         this.locationName = locationName;
         this.address1     = address1;
@@ -39,7 +39,7 @@ public class Location {
     public String getCity() { return city; }
     public String getPostCode() { return postCode; }
     public String getCountry() { return country; }
-    public Float  getLongitude() { return longitude; }
-    public Float  getLatitude() { return latitude; }
+    public double  getLongitude() { return longitude; }
+    public double  getLatitude() { return latitude; }
     public String getAdminOrg() { return adminOrg; }
 }

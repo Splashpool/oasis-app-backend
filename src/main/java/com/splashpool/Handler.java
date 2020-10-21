@@ -78,8 +78,8 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			String locCity = (String) map.get("city");
 			String locPostCode = (String) map.get("postCode");
 			String locCountry = (String) map.get("country");
-			Float locLongitude = (Float) map.get("longitude");
-			Float locLatitude = (Float) map.get("latitude");
+			double locLongitude = (double) map.get("longitude");
+			double locLatitude = (double) map.get("latitude");
 			String locAdminOrg = (String) map.get("adminOrg");
 
 			Class.forName("com.mysql.jdbc.Driver");
@@ -87,17 +87,16 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-					"Insert Location values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			preparedStatement.setLong(1, locId);
-			preparedStatement.setString(2, locName);
-			preparedStatement.setString(3, locAdd1);
-			preparedStatement.setString(4, locAdd2);
-			preparedStatement.setString(5, locCity);
-			preparedStatement.setString(6, locPostCode);
-			preparedStatement.setString(7, locCountry);
-			preparedStatement.setFloat(8, locLongitude);
-			preparedStatement.setFloat(9, locLatitude);
-			preparedStatement.setString(10, locAdminOrg);
+					"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			preparedStatement.setString(1, locName);
+			preparedStatement.setString(2, locAdd1);
+			preparedStatement.setString(3, locAdd2);
+			preparedStatement.setString(4, locCity);
+			preparedStatement.setString(5, locPostCode);
+			preparedStatement.setString(6, locCountry);
+			preparedStatement.setDouble(7, locLongitude);
+			preparedStatement.setDouble(8, locLatitude);
+			preparedStatement.setString(9, locAdminOrg);
 
 			int rowsInserted = preparedStatement.executeUpdate();
 
@@ -129,12 +128,6 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			preparedStatement.setQueryTimeout(5);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-//			PreparedStatement preparedStatement = connection.prepareStatement(
-//					"SELECT * from Location");
-//			// where locationName =?
-//			preparedStatement.setString(1, locName);
-//			ResultSet resultSet = preparedStatement.executeQuery();
-
 			while (resultSet.next()) {
 				Long locationId = resultSet.getLong("locationId");
 				String locationName = resultSet.getString("locationName");
@@ -143,8 +136,8 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 				String city = resultSet.getString("city");
 				String postCode = resultSet.getString("postCode");
 				String country = resultSet.getString("country");
-				Float longitude = resultSet.getFloat("longitude");
-				Float latitude = resultSet.getFloat("latitude");
+				double longitude = resultSet.getDouble("longitude");
+				double latitude = resultSet.getDouble("latitude");
 				String adminOrg = resultSet.getString("adminOrg");
 
 				LOG.info("Location: {} {} {} {} {} {} {} {} {} {}", locationId, locationName, address1,
@@ -160,15 +153,3 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		return locations;
 	}
 }
-
-
-
-
-
-
-//			Connection connect = DriverManager.getConnection("jdbc:mysql://oasis.cpgnf1zc8lar.eu-west-2.rds.amazonaws.com/oasis?"
-//					+ "user=root&password=Spl20shp00!20");
-//
-//			Statement statement = connect.createStatement();
-//			ResultSet resultSet = statement.executeQuery("select locationName, locationId from oasis.Location");
-
