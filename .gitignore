@@ -12,3 +12,5 @@ target
 
 # Serverless directories
 .serverless
+# Environment variables
+config.dev.json
