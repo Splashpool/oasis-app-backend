@@ -28,3 +28,14 @@ functions:
           path: locations
           method: post
           cors: true
+  users:
+    handler: com.splashpool.UserHandler
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
+      - http:
+          path: users
+          method: post
+          cors: true

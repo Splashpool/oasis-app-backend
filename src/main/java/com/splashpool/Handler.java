@@ -39,15 +39,10 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			if( input.get("queryStringParameters") != null ) {
 				locName = (String) ((Map) input.get("queryStringParameters")).get("locationName");
 			}
-			else {
-				LOG.info("QSP is null");
-			}
 
-			LOG.info("XXXXXXXXXX locationName gotten is:{}**!!", locName);
 			response = getLocations(locName);
 		} else if (httpMethod.equalsIgnoreCase("POST")) {
 			String postBody = (String) input.get("body");
-			LOG.info("We have a POST");
 			saveLocation(postBody);
 		}
 
@@ -117,15 +112,12 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 
 			PreparedStatement preparedStatement;
 			if ( locName == null ) {
-				LOG.info("locName is null");
 				preparedStatement = connection.prepareStatement("SELECT * from Location");
 			}
 			else {
-				LOG.info("locName is {}", locName);
 				preparedStatement = connection.prepareStatement("SELECT * from Location where locationName =?");
 				preparedStatement.setString(1, locName );
 			}
-			preparedStatement.setQueryTimeout(5);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
