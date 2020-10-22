@@ -32,19 +32,15 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		// Firstly, work out whether we are handling a GET or a POST for locations
 		String httpMethod = (String) input.get("httpMethod");
 
-		Double longitude= 0.0;
-		Double latitude=0.0;
+		String locName=null;
 		Object response = null;
 		if (httpMethod.equalsIgnoreCase("GET")) {
 
 			if( input.get("queryStringParameters") != null ) {
-				longitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("longitude"));
-				latitude  = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("latitude"));
-//				longitude = Double.parseDouble(longt);
-//				latitude  = Double.parseDouble(latt);
+				locName = (String) ((Map) input.get("queryStringParameters")).get("locationName");
 			}
 
-			response = getLocations(longitude, latitude);
+			response = getLocations(locName);
 		} else if (httpMethod.equalsIgnoreCase("POST")) {
 			String postBody = (String) input.get("body");
 			saveLocation(postBody);
@@ -106,8 +102,7 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		}
 	}
 
-//	private List<Location> getLocations(String locName) {
-	private List<Location> getLocations(double in_longitude, double in_latitude) {
+	private List<Location> getLocations(String locName) {
 		List<Location> locations = new ArrayList<>();
 
 		try {
@@ -116,17 +111,13 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					"jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
 			PreparedStatement preparedStatement;
-			double lowerLongitude = in_longitude - 5;
-			double upperLongitude = in_longitude + 5;
-			double lowerLatitude  = in_latitude  - 5;
-			double upperLatitude  = in_latitude  + 5;
-			preparedStatement = connection.prepareStatement("SELECT * from Location where " +
-					" ( longitude between ? and ? ) and ( latitude between ? and ? )");
-			preparedStatement.setDouble(1, lowerLongitude );
-			preparedStatement.setDouble(2, upperLongitude );
-			preparedStatement.setDouble(3, lowerLatitude );
-			preparedStatement.setDouble(4, upperLatitude );
-
+			if ( locName == null ) {
+				preparedStatement = connection.prepareStatement("SELECT * from Location");
+			}
+			else {
+				preparedStatement = connection.prepareStatement("SELECT * from Location where locationName =?");
+				preparedStatement.setString(1, locName );
+			}
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
