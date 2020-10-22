@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c0033927-0e69-4d8b-9341-0411026a34a3" name="Default Changelist" comment="Working version after merging latest from main">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/SavedLocationHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/model/SavedLocation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/serverless.yml" beforeDir="false" afterPath="$PROJECT_DIR$/serverless.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="D:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.3\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1irRzCUNbHK51nXzG6fycPsJkgq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c0033927-0e69-4d8b-9341-0411026a34a3" name="Default Changelist" comment="" />
+      <created>1602663988033</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1602663988033</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Working version after merging latest from main" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working version after merging latest from main" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="446" y="476" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603356770161">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="446" y="476" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1603356770161" />
+    <state x="-1024" y="334" key="#com.intellij.ide.util.MemberChooser" timestamp="1602666913524">
+      <screen x="-1920" y="0" width="1920" height="1200" />
+    </state>
+    <state x="-1024" y="334" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200/-1920.0.1920.1200@-1920.0.1920.1200" timestamp="1602666913524" />
+    <state x="536" y="332" key="#com.intellij.openapi.keymap.impl.ui.EditKeymapsDialog" timestamp="1602799634391">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="536" y="332" key="#com.intellij.openapi.keymap.impl.ui.EditKeymapsDialog/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1602799634391" />
+    <state x="740" y="354" key="FileChooserDialogImpl" timestamp="1602799563967">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="740" y="354" key="FileChooserDialogImpl/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1602799563967" />
+    <state x="340" y="341" key="MultipleFileMergeDialog" timestamp="1603293932103">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="340" y="341" key="MultipleFileMergeDialog/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1603293932103" />
+    <state x="-1131" y="219" key="SettingsEditor" timestamp="1602840344161">
+      <screen x="-1920" y="0" width="1920" height="1200" />
+    </state>
+    <state x="-1131" y="219" key="SettingsEditor/0.0.1920.1200/-1920.0.1920.1200@-1920.0.1920.1200" timestamp="1602840344161" />
+    <state x="218" y="273" key="SettingsEditor/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1602800318748" />
+  </component>
+</project>

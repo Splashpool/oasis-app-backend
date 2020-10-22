@@ -39,3 +39,14 @@ functions:
           path: users
           method: post
           cors: true
+  savedLocations:
+    handler: com.splashpool.SavedLocationHandler
+    events:
+      - http:
+          path: savedLocations
+          method: get
+          cors: true
+      - http:
+          path: savedLocations
+          method: post
+          cors: true
