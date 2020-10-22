@@ -10,7 +10,7 @@ public class SavedLocation {
         this.uuid           = uuid;
     }
 
-    public long getloctionId() {
+    public long getlocationId() {
         return locationId;
     }
     public String getUuid() {

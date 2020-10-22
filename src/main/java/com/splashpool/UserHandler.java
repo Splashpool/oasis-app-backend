@@ -44,6 +44,9 @@ public class UserHandler implements RequestHandler<Map<String, Object>, ApiGatew
         } else if (httpMethod.equalsIgnoreCase("POST")) {
             String postBody = (String) input.get("body");
             saveUser(postBody);
+        } else if (httpMethod.equalsIgnoreCase("DELETE")) {
+            in_email = (String) ((Map) input.get("queryStringParameters")).get("email");
+            deleteUser(in_email);
         }
 
         // CORS from anywhere
@@ -58,6 +61,40 @@ public class UserHandler implements RequestHandler<Map<String, Object>, ApiGatew
                 .build();
     }
 
+
+    private void deleteUser(String in_email) {
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(String.format(
+                    "jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
+            // need to set autoCommit to false as we want to do a transaction block
+            connection.setAutoCommit(false);
+
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement("Delete from SavedLocation where uuid = " +
+                    "(select uuid from User where email =?)");
+            preparedStatement.setString(1, in_email);
+
+            // at this stage, we don't care if it deletes nothing, it's not an error if there's nothing to delete.
+            int rowsDeleted = preparedStatement.executeUpdate();
+            LOG.info("{} rows deleted from SavedLocation for {}", rowsDeleted, in_email);
+
+            // now delete the User table since we've deleted those which have a foreign key constraint.
+            preparedStatement = connection.prepareStatement("Delete from User where email =?");
+            preparedStatement.setString(1, in_email);
+
+            rowsDeleted = preparedStatement.executeUpdate();
+            LOG.info("{} rows deleted from User for {}", rowsDeleted, in_email);
+
+            // no errors, lets commit the changes and reinstate auto Commit
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+        catch (ClassNotFoundException | SQLException e) {
+            LOG.error(e.getMessage());
+        }
+    }
 
     private void saveUser(String userInfo) {
         ObjectMapper mapper = new ObjectMapper();
