@@ -261,10 +261,10 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					"jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
 			PreparedStatement preparedStatement;
-			double lowerLongitude = in_longitude - 5.0;
-			double upperLongitude = in_longitude + 5.0;
-			double lowerLatitude  = in_latitude  - 2.0;
-			double upperLatitude  = in_latitude  + 2.0;
+			double lowerLongitude = in_longitude - 2.0;
+			double upperLongitude = in_longitude + 2.0;
+			double lowerLatitude  = in_latitude  - 1.0;
+			double upperLatitude  = in_latitude  + 1.0;
 			preparedStatement = connection.prepareStatement("SELECT * from Location where " +
 					" ( longitude between ? and ? ) and ( latitude between ? and ? )");
 			preparedStatement.setDouble(1, lowerLongitude );
