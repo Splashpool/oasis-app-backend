@@ -51,6 +51,9 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		} else if (httpMethod.equalsIgnoreCase("PUT")) {
 			String postBody = (String) input.get("body");
 			updateLocation(postBody);
+		} else if (httpMethod.equalsIgnoreCase("DELETE")) {
+			Long locationId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("locationId"));
+			deleteLocation(locationId);
 		}
 
 		// CORS from anywhere
@@ -64,6 +67,43 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 				.setHeaders(headers)
 				.build();
 	}
+
+
+	private void deleteLocation(Long in_locationId) {
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(String.format(
+					"jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
+			// need to set autoCommit to false as we want to do a transaction block
+			connection.setAutoCommit(false);
+
+			// need to delete from Comment table as it has a foreign key constraint on the Location.locationId
+			PreparedStatement preparedStatement;
+			preparedStatement = connection.prepareStatement("Delete from Comment where locationId =?");
+			preparedStatement.setLong(1, in_locationId);
+
+			// at this stage, we don't care if it deletes nothing, it's not an error if there's nothing to delete.
+			int rowsDeleted = preparedStatement.executeUpdate();
+			LOG.info("{} rows deleted from Comment for {}", rowsDeleted, in_locationId);
+
+			// now delete the Location table since we've deleted those which have a foreign key constraint.
+			preparedStatement = connection.prepareStatement("Delete from Location where locationId =?");
+			preparedStatement.setLong(1, in_locationId);
+
+			rowsDeleted = preparedStatement.executeUpdate();
+			LOG.info("{} rows deleted from Location for {}", rowsDeleted, in_locationId);
+
+			// no errors, lets commit the changes and reinstate auto Commit
+			connection.commit();
+			connection.setAutoCommit(true);
+		}
+		catch (ClassNotFoundException | SQLException e) {
+			LOG.error(e.getMessage());
+		}
+	}
+
+
 
 	private void updateLocation(String locInfo) {
 		ObjectMapper mapper = new ObjectMapper();
