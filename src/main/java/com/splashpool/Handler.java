@@ -80,13 +80,26 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			double locLongitude = (double) map.get("longitude");
 			double locLatitude = (double) map.get("latitude");
 			String locAdminOrg = (String) map.get("adminOrg");
+			boolean locWater = (boolean) map.get("water");
+			boolean locDrinkable = (boolean) map.get("drinkable");
+			boolean locTreatment = (boolean) map.get("treatment");
+			boolean locUnknown = (boolean) map.get("unknown");
+			boolean locLargeWaterFacility = (boolean) map.get("largeWaterFacility");
+			boolean locMaleToilets = (boolean) map.get("maleToilets");
+			boolean locFemaleToilets = (boolean) map.get("femaleToilets");
+			boolean locLargeToiletFacility = (boolean) map.get("largeToiletFacility");
+			boolean locDisabledAccess = (boolean) map.get("disabledAccess");
+			boolean locChargeForUse = (boolean) map.get("chargeForUse");
+			String  locOpeningHours = (String) map.get("openingHours");
+			boolean locHasIssue = (boolean) map.get("hasIssue");
+
 
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-					"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, locName);
 			preparedStatement.setString(2, locAdd1);
 			preparedStatement.setString(3, locAdd2);
@@ -96,6 +109,18 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			preparedStatement.setDouble(7, locLongitude);
 			preparedStatement.setDouble(8, locLatitude);
 			preparedStatement.setString(9, locAdminOrg);
+			preparedStatement.setBoolean(10, locWater);
+			preparedStatement.setBoolean(11, locDrinkable);
+			preparedStatement.setBoolean(12, locTreatment);
+			preparedStatement.setBoolean(13, locUnknown);
+			preparedStatement.setBoolean(14, locLargeWaterFacility);
+			preparedStatement.setBoolean(15, locMaleToilets);
+			preparedStatement.setBoolean(16, locFemaleToilets);
+			preparedStatement.setBoolean(17, locLargeToiletFacility);
+			preparedStatement.setBoolean(18, locDisabledAccess);
+			preparedStatement.setBoolean(19, locChargeForUse);
+			preparedStatement.setString(20, locOpeningHours);
+			preparedStatement.setBoolean(21, locHasIssue);
 
 			int rowsInserted = preparedStatement.executeUpdate();
 
@@ -116,10 +141,10 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					"jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
 			PreparedStatement preparedStatement;
-			double lowerLongitude = in_longitude - 5;
-			double upperLongitude = in_longitude + 5;
-			double lowerLatitude  = in_latitude  - 5;
-			double upperLatitude  = in_latitude  + 5;
+			double lowerLongitude = in_longitude - 5.0;
+			double upperLongitude = in_longitude + 5.0;
+			double lowerLatitude  = in_latitude  - 2.0;
+			double upperLatitude  = in_latitude  + 2.0;
 			preparedStatement = connection.prepareStatement("SELECT * from Location where " +
 					" ( longitude between ? and ? ) and ( latitude between ? and ? )");
 			preparedStatement.setDouble(1, lowerLongitude );
@@ -130,22 +155,39 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				Long locationId = resultSet.getLong("locationId");
-				String locationName = resultSet.getString("locationName");
-				String address1 = resultSet.getString("address1");
-				String address2 = resultSet.getString("address2");
-				String city = resultSet.getString("city");
-				String postCode = resultSet.getString("postCode");
-				String country = resultSet.getString("country");
-				double longitude = resultSet.getDouble("longitude");
-				double latitude = resultSet.getDouble("latitude");
-				String adminOrg = resultSet.getString("adminOrg");
+				Long    locationId = resultSet.getLong("locationId");
+				String  locationName = resultSet.getString("locationName");
+				String  address1 = resultSet.getString("address1");
+				String  address2 = resultSet.getString("address2");
+				String  city = resultSet.getString("city");
+				String  postCode = resultSet.getString("postCode");
+				String  country = resultSet.getString("country");
+				double  longitude = resultSet.getDouble("longitude");
+				double  latitude = resultSet.getDouble("latitude");
+				String  adminOrg = resultSet.getString("adminOrg");
+				boolean water = resultSet.getBoolean("water");
+				boolean drinkable = resultSet.getBoolean("drinkable");
+				boolean treatment = resultSet.getBoolean("treatment");
+				boolean unknown = resultSet.getBoolean("unknown");
+				boolean largeWaterFacility = resultSet.getBoolean("largeWaterFacility");
+				boolean maleToilets = resultSet.getBoolean("maleToilets");
+				boolean femaleToilets = resultSet.getBoolean("femaleToilets");
+				boolean largeToiletFacility = resultSet.getBoolean("largeToiletFacility");
+				boolean disabledAccess = resultSet.getBoolean("disabledAccess");
+				boolean chargeForUse = resultSet.getBoolean("chargeForUse");
+				String  openingHours = resultSet.getString("openingHours");
+				boolean hasIssue = resultSet.getBoolean("hasIssue");
 
-				LOG.info("Location: {} {} {} {} {} {} {} {} {} {}", locationId, locationName, address1,
-						address2, city, postCode, country, longitude, latitude, adminOrg);
+				LOG.info("Location: {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}",
+						locationId, locationName, address1, address2, city, postCode, country,
+						longitude, latitude, adminOrg, water, drinkable, treatment, unknown,
+						largeWaterFacility, maleToilets, femaleToilets, largeToiletFacility,
+						disabledAccess, chargeForUse, openingHours, hasIssue);
 
 				locations.add(new Location(locationId, locationName, address1, address2, city,
-						postCode, country, longitude, latitude, adminOrg));
+						postCode, country, longitude, latitude, adminOrg, water, drinkable,
+						treatment, unknown, largeWaterFacility, maleToilets, femaleToilets,
+						largeToiletFacility, disabledAccess, chargeForUse, openingHours, hasIssue));
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage());
