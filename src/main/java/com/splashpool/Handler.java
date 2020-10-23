@@ -48,6 +48,9 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		} else if (httpMethod.equalsIgnoreCase("POST")) {
 			String postBody = (String) input.get("body");
 			saveLocation(postBody);
+		} else if (httpMethod.equalsIgnoreCase("PUT")) {
+			String postBody = (String) input.get("body");
+			updateLocation(postBody);
 		}
 
 		// CORS from anywhere
@@ -60,6 +63,83 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 				.setObjectBody(response)
 				.setHeaders(headers)
 				.build();
+	}
+
+	private void updateLocation(String locInfo) {
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> map = null;
+
+		try {
+			map = mapper.readValue(locInfo, Map.class);
+			// thing to remember is that ObjectMapper or Map, whenever the json goes
+			// through deserialization or an untyped stage, you need to write code like
+			// below to get a Long from the json (because a figure like 100001, because it's within
+			// 32bits, would automatically convert to Integer).  You have to call it like below
+			// to get it as a Long.
+			Long locId = ((Number) map.get("locationId")).longValue();
+			String locName = (String) map.get("locationName");
+			String locAdd1 = (String) map.get("address1");
+			String locAdd2 = (String) map.get("address2");
+			String locCity = (String) map.get("city");
+			String locPostCode = (String) map.get("postCode");
+			String locCountry = (String) map.get("country");
+			double locLongitude = (double) map.get("longitude");
+			double locLatitude = (double) map.get("latitude");
+			String locAdminOrg = (String) map.get("adminOrg");
+			boolean locWater = (boolean) map.get("water");
+			boolean locDrinkable = (boolean) map.get("drinkable");
+			boolean locTreatment = (boolean) map.get("treatment");
+			boolean locUnknown = (boolean) map.get("unknown");
+			boolean locLargeWaterFacility = (boolean) map.get("largeWaterFacility");
+			boolean locMaleToilets = (boolean) map.get("maleToilets");
+			boolean locFemaleToilets = (boolean) map.get("femaleToilets");
+			boolean locLargeToiletFacility = (boolean) map.get("largeToiletFacility");
+			boolean locDisabledAccess = (boolean) map.get("disabledAccess");
+			boolean locChargeForUse = (boolean) map.get("chargeForUse");
+			String  locOpeningHours = (String) map.get("openingHours");
+			boolean locHasIssue = (boolean) map.get("hasIssue");
+
+
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager
+					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+					"Update Location set locationName=?, address1=?, address2=?, city=?, postCode=?," +
+							" country=?, longitude=?, latitude=?, adminOrg=?, water=?, drinkable=?," +
+							" treatment=?, unknown=?, largeWaterFacility=?, maleToilets=?, femaleToilets=?," +
+							" largeToiletFacility=?, disabledAccess=?, chargeForUse=?, openingHours=?, hasIssue=?" +
+							" where locationId=?");
+			preparedStatement.setString(1, locName);
+			preparedStatement.setString(2, locAdd1);
+			preparedStatement.setString(3, locAdd2);
+			preparedStatement.setString(4, locCity);
+			preparedStatement.setString(5, locPostCode);
+			preparedStatement.setString(6, locCountry);
+			preparedStatement.setDouble(7, locLongitude);
+			preparedStatement.setDouble(8, locLatitude);
+			preparedStatement.setString(9, locAdminOrg);
+			preparedStatement.setBoolean(10, locWater);
+			preparedStatement.setBoolean(11, locDrinkable);
+			preparedStatement.setBoolean(12, locTreatment);
+			preparedStatement.setBoolean(13, locUnknown);
+			preparedStatement.setBoolean(14, locLargeWaterFacility);
+			preparedStatement.setBoolean(15, locMaleToilets);
+			preparedStatement.setBoolean(16, locFemaleToilets);
+			preparedStatement.setBoolean(17, locLargeToiletFacility);
+			preparedStatement.setBoolean(18, locDisabledAccess);
+			preparedStatement.setBoolean(19, locChargeForUse);
+			preparedStatement.setString(20, locOpeningHours);
+			preparedStatement.setBoolean(21, locHasIssue);
+			preparedStatement.setLong(22, locId);
+
+			int rowsUpdated = preparedStatement.executeUpdate();
+
+			LOG.info("{} rows inserted", rowsUpdated);
+		}
+		catch (IOException | ClassNotFoundException | SQLException e) {
+			LOG.error(e.getMessage());
+		}
 	}
 
 
