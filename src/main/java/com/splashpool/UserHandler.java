@@ -47,6 +47,9 @@ public class UserHandler implements RequestHandler<Map<String, Object>, ApiGatew
         } else if (httpMethod.equalsIgnoreCase("DELETE")) {
             in_email = (String) ((Map) input.get("queryStringParameters")).get("email");
             deleteUser(in_email);
+        } else if (httpMethod.equalsIgnoreCase("PUT")) {
+            String postBody = (String) input.get("body");
+            updateUser(postBody);
         }
 
         // CORS from anywhere
@@ -59,6 +62,59 @@ public class UserHandler implements RequestHandler<Map<String, Object>, ApiGatew
                 .setObjectBody(response)
                 .setHeaders(headers)
                 .build();
+    }
+
+
+    private void updateUser(String userInfo) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = null;
+
+        try {
+            map = mapper.readValue(userInfo, Map.class);
+            String email        = (String) map.get("email");
+            String uuid         = (String) map.get("uuid");
+            String firstName    = (String) map.get("firstName");
+            String lastName     = (String) map.get("lastName");
+            String countryCode  = (String) map.get("countryCode");
+            String mobileNumber = (String) map.get("mobileNumber");
+            boolean adminUser   = (boolean) map.get("adminUser");
+            String organisation = (String) map.get("organisation");
+            String orgAddress1  = (String) map.get("orgAddress1");
+            String orgAddress2  = (String) map.get("orgAddress2");
+            String orgCity      = (String) map.get("orgCity");
+            String orgPostCode  = (String) map.get("orgPostCode");
+            String orgCountry   = (String) map.get("orgCountry");
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager
+                    .getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
+
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "Update User set firstName=?, lastName=?, countryCode=?, mobileNumber=?, adminUser=?, organisation=?, orgAddress1=?, orgAddress2=?, orgCity=?, orgPostCode=?, orgCountry=? where email= ?");
+            // We cannot set email or uuid as they are linked, and unique to the user, and are the key
+            // driving the statements.
+//            preparedStatement.setString(1, email);
+//            preparedStatement.setString(2, uuid);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, countryCode);
+            preparedStatement.setString(4, mobileNumber);
+            preparedStatement.setBoolean(5, adminUser);
+            preparedStatement.setString(6, organisation);
+            preparedStatement.setString(7, orgAddress1);
+            preparedStatement.setString(8, orgAddress2);
+            preparedStatement.setString(9, orgCity);
+            preparedStatement.setString(10, orgPostCode);
+            preparedStatement.setString(11, orgCountry);
+            preparedStatement.setString(12, email);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            LOG.info("{} rows updated", rowsUpdated);
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
+            LOG.error(e.getMessage());
+        }
     }
 
 

@@ -51,6 +51,10 @@ functions:
           path: users
           method: delete
           cors: true
+      - http:
+          path: users
+          method: put
+          cors: true
   savedLocations:
     handler: com.splashpool.SavedLocationHandler
     events:
