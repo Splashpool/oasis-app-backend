@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 
 public class FacilityProblemHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
@@ -34,12 +35,18 @@ public class FacilityProblemHandler implements RequestHandler<Map<String, Object
         String httpMethod = (String) input.get("httpMethod");
 
         Long in_problemId=null;
+        boolean getHistory = false;
         Object response = null;
         if (httpMethod.equalsIgnoreCase("GET")) {
             if( input.get("queryStringParameters") != null ) {
-                in_problemId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("problemId"));
+                if ( ((String) ((Map) input.get("queryStringParameters")).get("problemId"))  != null ) {
+                    in_problemId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("problemId"));
+                }
+                if( ((String) ((Map) input.get("queryStringParameters")).get("getHistory")) != null ) {
+                    getHistory = Boolean.parseBoolean( ((String) ((Map) input.get("queryStringParameters")).get("getHistory")) );
+                }
             }
-            response = getFacilityProblem(in_problemId);
+            response = getFacilityProblem(in_problemId, getHistory);
         }   else if (httpMethod.equalsIgnoreCase("POST")) {
                 String postBody = (String) input.get("body");
                 saveFacilityProblem(postBody);
@@ -157,7 +164,7 @@ public class FacilityProblemHandler implements RequestHandler<Map<String, Object
         }
     }
 
-    private List<FacilityProblem> getFacilityProblem(Long in_problemId) {
+    private List<FacilityProblem> getFacilityProblem(Long in_problemId, boolean getHistory) {
         List<FacilityProblem> facilityProblems = new ArrayList<>();
 
         try {
@@ -167,13 +174,21 @@ public class FacilityProblemHandler implements RequestHandler<Map<String, Object
 
             PreparedStatement preparedStatement;
             if ( in_problemId == null ) {
-
-                preparedStatement = connection.prepareStatement("SELECT * from FacilityProblem");
+                if ( getHistory ) {
+                    preparedStatement = connection.prepareStatement("Select * from FacilityProblem union select * from FacilityProblemHistory order by problemId, version desc");
+                } else {
+                    preparedStatement = connection.prepareStatement("SELECT * from FacilityProblem order by problemId asc");
+                }
             }
             else {
-
-                preparedStatement = connection.prepareStatement("SELECT * from FacilityProblem where problemId =?");
-                preparedStatement.setLong(1, in_problemId );
+                if ( getHistory ) {
+                    preparedStatement = connection.prepareStatement("SELECT * from FacilityProblem where problemId =? union select * from FacilityProblemHistory where problemId =? order by version desc");
+                    preparedStatement.setLong(1, in_problemId);
+                    preparedStatement.setLong(2, in_problemId);
+                } else {
+                    preparedStatement = connection.prepareStatement("SELECT * from FacilityProblem where problemId =?");
+                    preparedStatement.setLong(1, in_problemId);
+                }
             }
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -184,7 +199,8 @@ public class FacilityProblemHandler implements RequestHandler<Map<String, Object
                 Timestamp auditDateTime = resultSet.getTimestamp("auditDateTime");
                 String description = resultSet.getString("description");
 
-                LOG.info("FacilityProblem: {} {} {} {} {}", problemId, locationId, version, auditDateTime, description);
+                String auditDtTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(auditDateTime);
+                LOG.info("FacilityProblem: {} {} {} {} {}", problemId, locationId, version, auditDtTime, description);
 
                 facilityProblems.add(new FacilityProblem(problemId, locationId, version, auditDateTime, description));
             }
