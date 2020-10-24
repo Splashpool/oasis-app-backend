@@ -40,8 +40,6 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			if( input.get("queryStringParameters") != null ) {
 				longitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("longitude"));
 				latitude  = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("latitude"));
-//				longitude = Double.parseDouble(longt);
-//				latitude  = Double.parseDouble(latt);
 			}
 
 			response = getLocations(longitude, latitude);
