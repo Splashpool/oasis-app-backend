@@ -35,15 +35,22 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
         String in_uuid=null;
         Object response = null;
         if (httpMethod.equalsIgnoreCase("GET")) {
-
             if( input.get("queryStringParameters") != null ) {
                 in_uuid = (String) ((Map) input.get("queryStringParameters")).get("uuid");
             }
-
             response = getSavedLocation(in_uuid);
         } else if (httpMethod.equalsIgnoreCase("POST")) {
             String postBody = (String) input.get("body");
             saveSavedLocation(postBody);
+        } else if (httpMethod.equalsIgnoreCase("DELETE")) {
+            if( input.get("queryStringParameters") != null ) {
+                if ( ((String) ((Map) input.get("queryStringParameters")).get("uuid"))  != null ) {
+                    in_uuid = (String) ((Map) input.get("queryStringParameters")).get("uuid");
+                    deleteSavedLocation(in_uuid);
+                }
+            }
+            // basically, you don't want it to do anything if a uuid is not provided
+            // so that's why there is no "else" here.
         }
 
         // CORS from anywhere
@@ -56,6 +63,26 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
                 .setObjectBody(response)
                 .setHeaders(headers)
                 .build();
+    }
+
+
+    private void deleteSavedLocation(String in_uuid) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(String.format(
+                    "jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
+
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement("Delete from SavedLocation where uuid =?");
+            preparedStatement.setString(1, in_uuid);
+
+            int rowsDeleted = preparedStatement.executeUpdate();
+
+            LOG.info("{} rows deleted", rowsDeleted);
+        }
+        catch (ClassNotFoundException | SQLException e) {
+            LOG.error(e.getMessage());
+        }
     }
 
 

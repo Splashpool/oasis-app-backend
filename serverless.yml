@@ -62,6 +62,10 @@ functions:
           path: savedLocations
           method: post
           cors: true
+      - http:
+          path: savedLocations
+          method: delete
+          cors: true
   facilityProblems:
     handler: com.splashpool.FacilityProblemHandler
     events:
