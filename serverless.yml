@@ -42,7 +42,7 @@ functions:
       - http:
           path: users
           method: get
-          cors: true
+          cors: truefdon
       - http:
           path: users
           method: post
@@ -61,4 +61,19 @@ functions:
       - http:
           path: savedLocations
           method: post
+          cors: true
+  facilityProblems:
+    handler: com.splashpool.FacilityProblemHandler
+    events:
+      - http:
+          path: facilityProblems
+          method: get
+          cors: true
+      - http:
+          path: facilityProblems
+          method: post
+          cors: true
+      - http:
+          path: facilityProblems
+          method: put
           cors: true
