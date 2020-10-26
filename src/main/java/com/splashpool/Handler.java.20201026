@@ -192,21 +192,30 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			Long locId = null;
 			String locName = (String) map.get("locationName");
 			String locAdd1 = (String) map.get("address1");
-			String locAdd2 = (String) map.get("address2");
+//			if ( (String) map.get("address2") != null ) {
+				String locAdd2 = (String) map.get("address2");
+//			}
+//			else { String locAdd2 = null; }
 			String locCity = (String) map.get("city");
-			String locPostCode = (String) map.get("postCode");
+//			if ( (String) map.get("postCode") != null ) {
+				String locPostCode = (String) map.get("postCode");
+//			}
+//			else { String locPostCode = null; }
 			String locCountry = (String) map.get("country");
-			double locLongitude = 0.0000000000000001;  // setting default value for if not entered.
-			if ( map.get("longitude") != null ) {
+			double locLongitude;
+			if ( (double) map.get("longitude") != null ) {
 				locLongitude = (double) map.get("longitude");
 			}
-			else { locLongitude = 0.0000000000000001; }
-			double locLatitude = 0.0000000000000001;	// setting default value for if not entered.
-			if ( map.get("latitude") != null ) {
+			else { locLongitude = 999.999999; }
+			double locLatitude;
+			if ( (double) map.get("latitude") != null ) {
 				locLatitude = (double) map.get("latitude");
 			}
-			else { locLatitude = 0.0000000000000001; }
-			String locAdminOrg = (String) map.get("adminOrg");
+			else { locLatitude = 999.999999; }
+//			if ( (String) map.get("adminOrg") != null ) {
+				String locAdminOrg = (String) map.get("adminOrg");
+//			}
+//			else { String locAdminOrg = null; }
 			boolean locWater = (boolean) map.get("water");
 			boolean locDrinkable = (boolean) map.get("drinkable");
 			boolean locTreatment = (boolean) map.get("treatment");
@@ -225,51 +234,29 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			Connection connection = DriverManager
 					.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
-			// The following preparedStatement - only because java can't initialize a double with null.
-			// and we have locLongitude and locLatitude and their combinations to think about.
-			PreparedStatement preparedStatement;
-			if ( locLongitude == 0.0000000000000001 && locLatitude == 0.0000000000000001 ) {
-				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			}
-			else if ( locLongitude == 0.0000000000000001 ) {
-				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			}
-			else if ( locLatitude == 0.0000000000000001 ){
-				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			}
-			else {
-				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			}
-			int colIndex = 0;
-			preparedStatement.setString(++colIndex, locName);
-			preparedStatement.setString(++colIndex, locAdd1);
-			preparedStatement.setString(++colIndex, locAdd2);
-			preparedStatement.setString(++colIndex, locCity);
-			preparedStatement.setString(++colIndex, locPostCode);
-			preparedStatement.setString(++colIndex, locCountry);
-			if ( locLongitude != 0.0000000000000001 ) {
-				preparedStatement.setDouble(++colIndex, locLongitude);
-			}
-			if ( locLatitude != 0.0000000000000001 ) {
-				preparedStatement.setDouble(++colIndex, locLatitude);
-			}
-			preparedStatement.setString(++colIndex, locAdminOrg);
-			preparedStatement.setBoolean(++colIndex, locWater);
-			preparedStatement.setBoolean(++colIndex, locDrinkable);
-			preparedStatement.setBoolean(++colIndex, locTreatment);
-			preparedStatement.setBoolean(++colIndex, locUnknown);
-			preparedStatement.setBoolean(++colIndex, locLargeWaterFacility);
-			preparedStatement.setBoolean(++colIndex, locMaleToilets);
-			preparedStatement.setBoolean(++colIndex, locFemaleToilets);
-			preparedStatement.setBoolean(++colIndex, locLargeToiletFacility);
-			preparedStatement.setBoolean(++colIndex, locDisabledAccess);
-			preparedStatement.setBoolean(++colIndex, locChargeForUse);
-			preparedStatement.setString(++colIndex, locOpeningHours);
-			preparedStatement.setBoolean(++colIndex, locHasIssue);
+			PreparedStatement preparedStatement = connection.prepareStatement(
+					"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			preparedStatement.setString(1, locName);
+			preparedStatement.setString(2, locAdd1);
+			preparedStatement.setString(3, locAdd2);
+			preparedStatement.setString(4, locCity);
+			preparedStatement.setString(5, locPostCode);
+			preparedStatement.setString(6, locCountry);
+			preparedStatement.setDouble(7, locLongitude);
+			preparedStatement.setDouble(8, locLatitude);
+			preparedStatement.setString(9, locAdminOrg);
+			preparedStatement.setBoolean(10, locWater);
+			preparedStatement.setBoolean(11, locDrinkable);
+			preparedStatement.setBoolean(12, locTreatment);
+			preparedStatement.setBoolean(13, locUnknown);
+			preparedStatement.setBoolean(14, locLargeWaterFacility);
+			preparedStatement.setBoolean(15, locMaleToilets);
+			preparedStatement.setBoolean(16, locFemaleToilets);
+			preparedStatement.setBoolean(17, locLargeToiletFacility);
+			preparedStatement.setBoolean(18, locDisabledAccess);
+			preparedStatement.setBoolean(19, locChargeForUse);
+			preparedStatement.setString(20, locOpeningHours);
+			preparedStatement.setBoolean(21, locHasIssue);
 
 			int rowsInserted = preparedStatement.executeUpdate();
 

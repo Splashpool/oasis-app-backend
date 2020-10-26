@@ -24,8 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c0033927-0e69-4d8b-9341-0411026a34a3" name="Default Changelist" comment="Working version after merging latest from main">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/serverless.yml" beforeDir="false" afterPath="$PROJECT_DIR$/serverless.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/splashpool/UserHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/UserHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,5 +114,16 @@
     </state>
     <state x="-1131" y="219" key="SettingsEditor/0.0.1920.1200/-1920.0.1920.1200@-1920.0.1920.1200" timestamp="1602840344161" />
     <state x="218" y="273" key="SettingsEditor/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1602800318748" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java</url>
+          <line>209</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
