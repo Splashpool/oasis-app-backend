@@ -14,7 +14,7 @@ provider:
     DB_PASSWORD: ${file(./config.dev.json):DB_PASSWORD}
 
 package:
-  artifact: target/hello-dev.jar
+  artifact: target/oasis-app-dev.jar
 
 functions:
   locations:
