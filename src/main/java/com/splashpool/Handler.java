@@ -48,9 +48,7 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					latitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("latitude"));
 				}
 				if ( ((Map) input.get("queryStringParameters")).get("locationId") != null ) {
-					LOG.info("OK, so we are in the right branch");
 					locId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("locationId"));
-					LOG.info("YYYYY {} ", locId);
 				}
 			}
 			response = getLocations(longitude, latitude, locId);

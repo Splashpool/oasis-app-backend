@@ -104,3 +104,18 @@ functions:
           path: comments
           method: delete
           cors: true
+  registerNotifications:
+    handler: com.splashpool.RegisterFacilityNotificationHandler
+    events:
+      - http:
+          path: registerNotifications
+          method: get
+          cors: true
+      - http:
+          path: registerNotifications
+          method: post
+          cors: true
+      - http:
+          path: registerNotifications
+          method: delete
+          cors: true

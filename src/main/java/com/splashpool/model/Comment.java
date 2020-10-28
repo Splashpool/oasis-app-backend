@@ -14,7 +14,7 @@ public class Comment {
         this.rating       = rating;
     }
 
-    public long   getlocationId() {
+    public long   getLocationId() {
         return locationId;
     }
     public String getComment() {

@@ -4,7 +4,7 @@ package com.splashpool;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.splashpool.model.SavedLocation;
+import com.splashpool.model.RegisterFacilityNotification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 
-public class SavedLocationHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
+public class RegisterFacilityNotificationHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
-    private static final Logger LOG = LogManager.getLogger(SavedLocationHandler.class);
+    private static final Logger LOG = LogManager.getLogger(RegisterFacilityNotificationHandler.class);
 
     private String DB_HOST = System.getenv("DB_HOST");
     private String DB_NAME = System.getenv("DB_NAME");
@@ -33,23 +33,29 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
         String httpMethod = (String) input.get("httpMethod");
 
         String in_uuid=null;
+        Long in_problemId = 0l;
         Object response = null;
         if (httpMethod.equalsIgnoreCase("GET")) {
-            if( input.get("queryStringParameters") != null ) {
-                in_uuid = (String) ((Map) input.get("queryStringParameters")).get("uuid");
+            if ( input.get("queryStringParameters") != null ) {
+                if (((Map) input.get("queryStringParameters")).get("problemId") != null) {
+                    in_problemId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("problemId"));
+                }
             }
-            response = getSavedLocation(in_uuid);
+            response = getRegisteredNotification(in_problemId);
         } else if (httpMethod.equalsIgnoreCase("POST")) {
             String postBody = (String) input.get("body");
-            saveSavedLocation(postBody);
+            saveRegisterNotification(postBody);
         } else if (httpMethod.equalsIgnoreCase("DELETE")) {
             if( input.get("queryStringParameters") != null ) {
                 if ( ((String) ((Map) input.get("queryStringParameters")).get("uuid"))  != null ) {
                     in_uuid = (String) ((Map) input.get("queryStringParameters")).get("uuid");
-                    deleteSavedLocation(in_uuid);
                 }
+                if ( ((Map) input.get("queryStringParameters")).get("problemId") != null ) {
+                    in_problemId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("problemId"));
+                }
+                deleteRegisteredNotification(in_uuid, in_problemId);
             }
-            // basically, you don't want it to do anything if a uuid is not provided
+            // basically, you don't want it to do anything if a uuid/problemId is/are not provided
             // so that's why there is no "else" here.
         }
 
@@ -66,15 +72,16 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
     }
 
 
-    private void deleteSavedLocation(String in_uuid) {
+    private void deleteRegisteredNotification(String in_uuid, long in_problemId) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection(String.format(
                     "jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
             PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement("Delete from SavedLocation where uuid =?");
+            preparedStatement = connection.prepareStatement("Delete from UserRegisteredFacilityNotification where uuid =? and problemId =?");
             preparedStatement.setString(1, in_uuid);
+            preparedStatement.setLong(2, in_problemId);
 
             int rowsDeleted = preparedStatement.executeUpdate();
 
@@ -86,24 +93,24 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
     }
 
 
-    private void saveSavedLocation(String saveInfo) {
+    private void saveRegisterNotification(String saveInfo) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = null;
 
         try {
             map = mapper.readValue(saveInfo, Map.class);
-            Long locationId     = ((Number) map.get("locationId")).longValue();
-            String uuid         = (String) map.get("uuid");
+            Long problemId = ((Number) map.get("problemId")).longValue();
+            String uuid    = (String) map.get("uuid");
 
-            LOG.info("we got: {} {}", locationId, uuid);
+            LOG.info("we got: {} {}", problemId, uuid);
 
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager
                     .getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "Insert SavedLocation values (?, ?)");
-            preparedStatement.setLong(1, locationId);
+                    "Insert UserRegisteredFacilityNotification values (?, ?)");
+            preparedStatement.setLong(1, problemId);
             preparedStatement.setString(2, uuid);
 
             int rowsInserted = preparedStatement.executeUpdate();
@@ -115,9 +122,8 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
         }
     }
 
-    private List<SavedLocation> getSavedLocation(String in_uuid) {
-        @SuppressWarnings("unchecked")
-        List<SavedLocation> savedLocations = new ArrayList<>();
+    private List<RegisterFacilityNotification> getRegisteredNotification(long in_problemId) {
+        List<RegisterFacilityNotification> registeredNotifications = new ArrayList<>();
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -125,27 +131,27 @@ public class SavedLocationHandler implements RequestHandler<Map<String, Object>,
                     "jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
             PreparedStatement preparedStatement;
-            if ( in_uuid == null ) {
-                preparedStatement = connection.prepareStatement("SELECT * from SavedLocation");
+            if ( in_problemId == 0l ) {
+                preparedStatement = connection.prepareStatement("SELECT * from UserRegisteredFacilityNotification order by problemId");
             }
             else {
-                preparedStatement = connection.prepareStatement("SELECT * from SavedLocation where uuid =?");
-                preparedStatement.setString(1, in_uuid );
+                preparedStatement = connection.prepareStatement("SELECT * from UserRegisteredFacilityNotification where problemId =? order by problemId, uuid");
+                preparedStatement.setLong(1, in_problemId );
             }
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                long locationId    = resultSet.getLong("locationId");
+                long problemId    = resultSet.getLong("problemId");
                 String uuid        = resultSet.getString("uuid");
 
-                LOG.info("SavedLocation: {} {}", locationId, uuid);
+                LOG.info("RegisteredNotification: {} {}", problemId, uuid);
 
-                savedLocations.add(new SavedLocation(locationId, uuid));
+                registeredNotifications.add(new RegisterFacilityNotification(problemId, uuid));
             }
         } catch (ClassNotFoundException | SQLException e) {
             LOG.error(e.getMessage());
         }
 
-        return savedLocations;
+        return registeredNotifications;
     }
 }
