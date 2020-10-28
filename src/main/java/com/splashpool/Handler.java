@@ -32,25 +32,38 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		// Firstly, work out whether we are handling a GET or a POST for locations
 		String httpMethod = (String) input.get("httpMethod");
 
-		Double longitude= 0.0;
-		Double latitude=0.0;
-		Object response = null;
+		Double longitude = 999.0;
+		Double latitude  = 999.0;
+		Long   locId=0l;
+		Object response  = null;
 		if (httpMethod.equalsIgnoreCase("GET")) {
-
+			// The checks below gets longitude, latitude and locationId if they exist.
+			// When it goes down to getLocations, the order of preference is:
+			// if locationId exist, use it first.   The if longitude & latitude exists, use them
+			// otherwise, returns all Locations.
 			if( input.get("queryStringParameters") != null ) {
-				longitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("longitude"));
-				latitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("latitude"));
-				response = getLocations(longitude, latitude);
-			} else {
-				response = getLocations(999.0, 999.0);
+				if ( ( ((Map) input.get("queryStringParameters")).get("longitude") != null ) &&
+					 ( ((Map) input.get("queryStringParameters")).get("latitude") != null ) ) {
+					longitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("longitude"));
+					latitude = Double.parseDouble((String) ((Map) input.get("queryStringParameters")).get("latitude"));
+				}
+				if ( ((Map) input.get("queryStringParameters")).get("locationId") != null ) {
+					LOG.info("OK, so we are in the right branch");
+					locId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("locationId"));
+					LOG.info("YYYYY {} ", locId);
+				}
 			}
-		} else if (httpMethod.equalsIgnoreCase("POST")) {
+			response = getLocations(longitude, latitude, locId);
+		}
+		else if (httpMethod.equalsIgnoreCase("POST")) {
 			String postBody = (String) input.get("body");
 			saveLocation(postBody);
-		} else if (httpMethod.equalsIgnoreCase("PUT")) {
+		}
+		else if (httpMethod.equalsIgnoreCase("PUT")) {
 			String postBody = (String) input.get("body");
 			updateLocation(postBody);
-		} else if (httpMethod.equalsIgnoreCase("DELETE")) {
+		}
+		else if (httpMethod.equalsIgnoreCase("DELETE")) {
 			Long locationId = Long.parseLong((String) ((Map) input.get("queryStringParameters")).get("locationId"));
 			deleteLocation(locationId);
 		}
@@ -281,7 +294,7 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 	}
 
 //	private List<Location> getLocations(String locName) {
-	private List<Location> getLocations(double in_longitude, double in_latitude) {
+	private List<Location> getLocations(double in_longitude, double in_latitude, long in_locationId) {
 		List<Location> locations = new ArrayList<>();
 
 		try {
@@ -290,7 +303,11 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					"jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 
 			PreparedStatement preparedStatement;
-			if( in_longitude == 999.0 ) {
+			if ( in_locationId != 0 ) {
+				preparedStatement = connection.prepareStatement("Select * from Location where locationId =?");
+				preparedStatement.setLong(1, in_locationId);
+			}
+			else if( in_longitude == 999.0 ) {
 				preparedStatement = connection.prepareStatement("Select * from Location");
 			}
 			else {
