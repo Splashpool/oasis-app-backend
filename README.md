@@ -12,7 +12,7 @@ The hosted front end of the application is [here](https://splashpool.github.io/)
 
 ### Technology used
 
-- java w/ maven
+- java with maven
 - Serverless Framework
 - AWS Lambda and API Gateway
 - AWS RDS
@@ -54,6 +54,15 @@ If a problemId is passed in, then only a specific Facility's problem (and/or its
 Returns JSON object containing the latest comment/rating/picture for a specific locationId.
 
 There is currently no history on this table, but could easily be adapted if required.
+
+
+##### GET /registerNotifications
+[https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/registerNotifications](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/registerNotifications)
+Returns JSON object containing the Facilities where users have registered interest in them -for example if the problem was reported to have an issue or some problem.
+
+If no arguments are passed in, then it returns all registeredNotifications.
+If a problemId is passed in, then only return those with the same problemId.
+
 
 ---
 
@@ -148,11 +157,21 @@ Will create a Comment in the DB for a specific Facility when sent a JSON payload
 }
 ```
 
+##### POST /registerNotifications
+[https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/registerNotifications](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/registerNotifications)
+Will create a UserRegisteredFacilityNotification in the DB when sent a JSON payload in the format:
+
+```
+{
+    "problemId": 200001,
+    "uuid": "eva_uuid"
+}
+```
+
 ---
 
 ##### PUT /locations
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/locations](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/locations)
-
 Will update a Location when sent a JSON payload in the format:
 
 ```
@@ -184,7 +203,6 @@ Will update a Location when sent a JSON payload in the format:
 
 ##### PUT /users
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/users](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/users)
-
 Will update a User when sent a JSON payload in the format:
 
 ```
@@ -207,7 +225,6 @@ Will update a User when sent a JSON payload in the format:
 
 ##### PUT /facilityProblems
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/facilityProblems](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/facilityProblems)
-
 Will update a FacilityProblem when sent a JSON payload in the format:
 It will do this as a transaction - copy the existing record into the FacilityProblemHistory table, then update the existing record in the FacilityProblem table.
 This will provide a history of the specific problem.
@@ -224,7 +241,6 @@ This will provide a history of the specific problem.
 
 ##### PUT /comments
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/comments](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/comments)
-
 Will update a Facility's Comment when sent a JSON payload in the format:
 
 ```
@@ -240,27 +256,27 @@ Will update a Facility's Comment when sent a JSON payload in the format:
 
 ##### DELETE /locations
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/locations](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/locations)
-
 Will delete record from Comment table and Location table for the given locationId.  This will be done as a transaction due to the foreign key constraint on the Comment table.
 
 
 ##### DELETE /users
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/users](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/users)
-
 Will delete from the User and SavedLocation tables as a transaction for the given user (uuid).
 
 
 ##### DELETE /savedLocations
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/savedLocations](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/savedLocations)
-
 Will delete SavedLocation(s) for the given user (uuid).
 
 
 ##### DELETE /comments
 [https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/comments](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/comments)
-
 Will delete Comment for the given locationId.
 
+
+##### DELETE /registerNotifications
+[https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/registerNotifications](https://j33niy2o35.execute-api.eu-west-2.amazonaws.com/dev/registerNotifications)
+Will delete UserRegisteredFacilityNotification for the given uuid and problemId
 
 
 
