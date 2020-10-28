@@ -24,7 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c0033927-0e69-4d8b-9341-0411026a34a3" name="Default Changelist" comment="Working version after merging latest from main">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,6 +114,10 @@
     </state>
     <state x="-1131" y="219" key="SettingsEditor/0.0.1920.1200/-1920.0.1920.1200@-1920.0.1920.1200" timestamp="1602840344161" />
     <state x="218" y="273" key="SettingsEditor/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1602800318748" />
+    <state x="485" y="425" width="672" height="678" key="search.everywhere.popup" timestamp="1603845604189">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="485" y="425" width="672" height="678" key="search.everywhere.popup/0.0.1920.1200/-1920.0.1920.1200@0.0.1920.1200" timestamp="1603845604189" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
