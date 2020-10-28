@@ -23,13 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c0033927-0e69-4d8b-9341-0411026a34a3" name="Default Changelist" comment="Working version after merging latest from main">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/RegisterFacilityNotificationHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/model/RegisterFacilityNotification.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/serverless.yml" beforeDir="false" afterPath="$PROJECT_DIR$/serverless.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/splashpool/model/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/model/Comment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/splashpool/model/SavedLocation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/splashpool/model/SavedLocation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
