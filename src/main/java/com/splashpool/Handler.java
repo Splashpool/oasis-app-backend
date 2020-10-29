@@ -86,27 +86,27 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			Connection connection = DriverManager.getConnection(String.format(
 					"jdbc:mysql://%s/%s?user=%s&password=%s", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD));
 			// need to set autoCommit to false as we want to do a transaction block
-			connection.setAutoCommit(false);
+//			connection.setAutoCommit(false);
 
 			// need to delete from Comment table as it has a foreign key constraint on the Location.locationId
-			PreparedStatement preparedStatement;
-			preparedStatement = connection.prepareStatement("Delete from Comment where locationId =?");
-			preparedStatement.setLong(1, in_locationId);
+//			PreparedStatement preparedStatement;
+//			preparedStatement = connection.prepareStatement("Delete from Comment where locationId =?");
+//			preparedStatement.setLong(1, in_locationId);
 
 			// at this stage, we don't care if it deletes nothing, it's not an error if there's nothing to delete.
-			int rowsDeleted = preparedStatement.executeUpdate();
-			LOG.info("{} rows deleted from Comment for {}", rowsDeleted, in_locationId);
+//			int rowsDeleted = preparedStatement.executeUpdate();
+//			LOG.info("{} rows deleted from Comment for {}", rowsDeleted, in_locationId);
 
 			// now delete the Location table since we've deleted those which have a foreign key constraint.
-			preparedStatement = connection.prepareStatement("Delete from Location where locationId =?");
+			PreparedStatement preparedStatement = connection.prepareStatement("Delete from Location where locationId =?");
 			preparedStatement.setLong(1, in_locationId);
 
-			rowsDeleted = preparedStatement.executeUpdate();
+			int rowsDeleted = preparedStatement.executeUpdate();
 			LOG.info("{} rows deleted from Location for {}", rowsDeleted, in_locationId);
 
 			// no errors, lets commit the changes and reinstate auto Commit
-			connection.commit();
-			connection.setAutoCommit(true);
+//			connection.commit();
+//			connection.setAutoCommit(true);
 		}
 		catch (ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage());
@@ -148,6 +148,10 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			boolean locChargeForUse = (boolean) map.get("chargeForUse");
 			String  locOpeningHours = (String) map.get("openingHours");
 			boolean locHasIssue = (boolean) map.get("hasIssue");
+			String comment    = (String)  map.get("comment");
+			String pictureURL = (String)  map.get("pictureURL");
+			int    rating     = (int)     map.get("rating");
+
 
 
 			Class.forName("com.mysql.jdbc.Driver");
@@ -158,7 +162,8 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 					"Update Location set locationName=?, address1=?, address2=?, city=?, postCode=?," +
 							" country=?, longitude=?, latitude=?, adminOrg=?, water=?, drinkable=?," +
 							" treatment=?, unknown=?, largeWaterFacility=?, maleToilets=?, femaleToilets=?," +
-							" largeToiletFacility=?, disabledAccess=?, chargeForUse=?, openingHours=?, hasIssue=?" +
+							" largeToiletFacility=?, disabledAccess=?, chargeForUse=?, openingHours=?, hasIssue=?," +
+							" comment=?, pictureURL=?, rating=?" +
 							" where locationId=?");
 			preparedStatement.setString(1, locName);
 			preparedStatement.setString(2, locAdd1);
@@ -181,7 +186,10 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			preparedStatement.setBoolean(19, locChargeForUse);
 			preparedStatement.setString(20, locOpeningHours);
 			preparedStatement.setBoolean(21, locHasIssue);
-			preparedStatement.setLong(22, locId);
+			preparedStatement.setString(22, comment);
+			preparedStatement.setString(23, pictureURL);
+			preparedStatement.setInt(24, rating);
+			preparedStatement.setLong(25, locId);
 
 			int rowsUpdated = preparedStatement.executeUpdate();
 
@@ -230,6 +238,9 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			boolean locChargeForUse = (boolean) map.get("chargeForUse");
 			String  locOpeningHours = (String) map.get("openingHours");
 			boolean locHasIssue = (boolean) map.get("hasIssue");
+			String  locComment = (String) map.get("comment");
+			String  locPictureURL = (String) map.get("pictureURL");
+			int     locRating     = (int)     map.get("rating");
 
 
 			Class.forName("com.mysql.jdbc.Driver");
@@ -241,19 +252,19 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			PreparedStatement preparedStatement;
 			if ( locLongitude == 0.0000000000000001 && locLatitude == 0.0000000000000001 ) {
 				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else if ( locLongitude == 0.0000000000000001 ) {
 				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else if ( locLatitude == 0.0000000000000001 ){
 				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else {
 				preparedStatement = connection.prepareStatement(
-						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"Insert Location values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			int colIndex = 0;
 			preparedStatement.setString(++colIndex, locName);
@@ -281,6 +292,9 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 			preparedStatement.setBoolean(++colIndex, locChargeForUse);
 			preparedStatement.setString(++colIndex, locOpeningHours);
 			preparedStatement.setBoolean(++colIndex, locHasIssue);
+			preparedStatement.setString(++colIndex, locComment);
+			preparedStatement.setString(++colIndex, locPictureURL);
+			preparedStatement.setInt(++colIndex, locRating);
 
 			int rowsInserted = preparedStatement.executeUpdate();
 
@@ -302,7 +316,7 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 
 			PreparedStatement preparedStatement;
 			if ( in_locationId != 0 ) {
-				preparedStatement = connection.prepareStatement("Select * from Location where locationId =?");
+				preparedStatement = connection.prepareStatement("Select * from Location where L.locationId =?");
 				preparedStatement.setLong(1, in_locationId);
 			}
 			else if( in_longitude == 999.0 ) {
@@ -346,17 +360,21 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 				boolean chargeForUse = resultSet.getBoolean("chargeForUse");
 				String  openingHours = resultSet.getString("openingHours");
 				boolean hasIssue = resultSet.getBoolean("hasIssue");
+				String  comment = resultSet.getString("comment");
+				String  pictureURL = resultSet.getString("pictureURL");
+				int     rating = resultSet.getInt("rating");
 
-				LOG.info("Location: {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}",
+				LOG.info("Location: {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}",
 						locationId, locationName, address1, address2, city, postCode, country,
 						longitude, latitude, adminOrg, water, drinkable, treatment, unknown,
 						largeWaterFacility, maleToilets, femaleToilets, largeToiletFacility,
-						disabledAccess, chargeForUse, openingHours, hasIssue);
+						disabledAccess, chargeForUse, openingHours, hasIssue, comment, pictureURL, rating);
 
 				locations.add(new Location(locationId, locationName, address1, address2, city,
 						postCode, country, longitude, latitude, adminOrg, water, drinkable,
 						treatment, unknown, largeWaterFacility, maleToilets, femaleToilets,
-						largeToiletFacility, disabledAccess, chargeForUse, openingHours, hasIssue));
+						largeToiletFacility, disabledAccess, chargeForUse, openingHours, hasIssue,
+						comment, pictureURL, rating));
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage());

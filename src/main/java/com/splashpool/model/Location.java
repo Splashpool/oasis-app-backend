@@ -24,6 +24,9 @@ public class Location {
     private boolean chargeForUse;
     private String  openingHours;
     private boolean hasIssue;
+    private String comment;
+    private String pictureURL;
+    private int    rating;
 
 
     public Location(Long locationId, String locationName,
@@ -31,7 +34,8 @@ public class Location {
                     double longitude, double latitude, String adminOrg, boolean water, boolean drinkable,
                     boolean treatment, boolean unknown, boolean largeWaterFacility, boolean maleToilets,
                     boolean femaleToilets, boolean largeToiletFacility, boolean disabledAccess,
-                    boolean chargeForUse, String openingHours, boolean hasIssue) {
+                    boolean chargeForUse, String openingHours, boolean hasIssue,
+                    String comment, String pictureURL, int rating) {
         this.locationId          = locationId;
         this.locationName        = locationName;
         this.address1            = address1;
@@ -54,6 +58,9 @@ public class Location {
         this.chargeForUse        = chargeForUse;
         this.openingHours        = openingHours;
         this.hasIssue            = hasIssue;
+        this.comment             = comment;
+        this.pictureURL          = pictureURL;
+        this.rating              = rating;
     }
 
     public Long    getLocationId() {
@@ -82,5 +89,13 @@ public class Location {
     public boolean getChargeForUse() { return chargeForUse; }
     public String  getOpeningHours() { return openingHours; }
     public boolean getHasIssue() { return hasIssue; }
-
+    public String getComment() {
+        return comment;
+    }
+    public String getPictureURL() {
+        return pictureURL;
+    }
+    public int    getRating() {
+        return rating;
+    }
 }
