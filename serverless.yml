@@ -85,25 +85,6 @@ functions:
           path: facilityProblems
           method: put
           cors: true
-  comments:
-    handler: com.splashpool.CommentHandler
-    events:
-      - http:
-          path: comments
-          method: get
-          cors: true
-      - http:
-          path: comments
-          method: post
-          cors: true
-      - http:
-          path: comments
-          method: put
-          cors: true
-      - http:
-          path: comments
-          method: delete
-          cors: true
   registerNotifications:
     handler: com.splashpool.RegisterFacilityNotificationHandler
     events:
